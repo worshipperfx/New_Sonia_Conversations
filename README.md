@@ -36,7 +36,7 @@ Powered by OpenAI's GPT-4 and advanced vector search technology, Sonia provides 
 ![alt text](LandingPage3.png)
 
 ## Upload Component
-![alt text](UploadComponent.png)
+![alt text](UploadComponet.png)
 
 ## Chat Interface
 
