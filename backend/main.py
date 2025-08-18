@@ -17,8 +17,8 @@ app.include_router(chat.router, prefix="/api")
 
 origins = [
     "http://localhost:5173",
-    "https://<your-vercel-domain>.vercel.app",   # add after you deploy frontend
-    "https://<your-custom-domain>"               # optional
+    "https://new-sonia-conversations-git-main-marvellous-projects-62e5e8be.vercel.app",  
+    "www.sonia-conversations.com"  
 ]
 app.add_middleware(
     CORSMiddleware,
