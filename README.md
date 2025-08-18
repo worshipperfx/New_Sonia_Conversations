@@ -23,7 +23,9 @@ Powered by OpenAI's GPT-4 and advanced vector search technology, Sonia provides 
 
 ## Screenshots
 
-You can embed screenshots like this after uploading them to your repo:
+## Landing Page (Home Section)
+
+![alt text](LandingPage.png)
 
 
 
