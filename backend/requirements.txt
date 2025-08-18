@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+qdrant-client
+openai
+python-multipart
+pydantic
+pydantic-settings
