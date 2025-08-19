@@ -1,4 +1,5 @@
 fastapi
+docx
 PyPDF2
 uvicorn
 qdrant-client
