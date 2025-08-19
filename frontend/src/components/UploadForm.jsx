@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from '../config/api.js';
 import React, { useCallback, useMemo, useRef, useState } from "react";
 function uploadWithProgress({ url, file, metadata, onProgress, onAbortRef }) {
   return new Promise((resolve, reject) => {
@@ -51,7 +52,7 @@ const humanFileSize = (bytes) => {
 };
 
 export default function UploadForm({ 
-  endpoint = "/api/upload", 
+  endpoint = API_ENDPOINTS.upload, 
   onSuccess, 
   hideResponse = false 
 }) {
@@ -208,7 +209,7 @@ export default function UploadForm({
           )}
 
           <div className="row" style={{ gap: "12px" }}>
-            <button className="btn btn-primary" type="submit" disabled={!canSubmit}>Upload to /api/upload</button>
+            <button className="btn btn-primary" type="submit" disabled={!canSubmit}>Upload to {API_ENDPOINTS.upload}</button>
             <button type="button" className="btn btn-ghost" onClick={resetForm}>Reset</button>
           </div>
         </form>

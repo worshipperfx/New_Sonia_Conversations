@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import UploadModal from "./UploadModal.jsx";  
+import { API_ENDPOINTS } from '../config/api.js';
 
 function formatMessageContent(content) {
   content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -65,10 +66,10 @@ export default function ChatWindow({ navigate }) {
       const formData = new FormData();
       formData.append("question", inputValue);
 
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        body: formData
-      });
+      const response = await fetch(API_ENDPOINTS.chat, {
+      method: "POST",
+      body: formData
+    });
 
       const data = await response.json();
 
@@ -118,7 +119,7 @@ export default function ChatWindow({ navigate }) {
       const formData = new FormData();
       formData.append("question", "Please provide a comprehensive summary of the uploaded document, highlighting the key points and main themes.");
       
-      fetch("/api/chat", {
+      fetch(API_ENDPOINTS.chat, {
         method: "POST",
         body: formData
       })
