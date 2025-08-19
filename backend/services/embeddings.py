@@ -6,12 +6,30 @@ from uuid import uuid4
 from dotenv import load_dotenv
 import os
 
-# Load from env
+# Load from env 
 load_dotenv()
 
+# Get environment variables with debugging
 openai_api_key = os.getenv("OPENAI_API_KEY")
 qdrant_url = os.getenv("QDRANT_URL")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
+
+# Debug logging 
+print("=== ENVIRONMENT DEBUG ===")
+print(f"OPENAI_API_KEY found: {'Yes' if openai_api_key else 'No'}")
+print(f"QDRANT_URL found: {'Yes' if qdrant_url else 'No'}")
+print(f"QDRANT_API_KEY found: {'Yes' if qdrant_api_key else 'No'}")
+if openai_api_key:
+    print(f"OpenAI key starts with: {openai_api_key[:10]}...")
+print("=== END DEBUG ===")
+
+# Validate required environment variables
+if not openai_api_key:
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
+if not qdrant_url:
+    raise ValueError("QDRANT_URL environment variable is not set")
+if not qdrant_api_key:
+    raise ValueError("QDRANT_API_KEY environment variable is not set")
 
 openai_client = OpenAI(api_key=openai_api_key)
 qdrant = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
