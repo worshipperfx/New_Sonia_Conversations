@@ -86,3 +86,4 @@ def chunk_text(text: str, max_tokens: int = 500) -> List[str]:
     if current:
         chunks.append(current.strip())
     return chunks
+
