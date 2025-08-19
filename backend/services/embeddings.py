@@ -1,20 +1,15 @@
+import os
 from openai import OpenAI
-import openai
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct, VectorParams, Distance
 from uuid import uuid4
-from dotenv import load_dotenv
-import os
 
-# Load from env 
-load_dotenv()
+# Get environment variables
+openai_api_key = os.environ.get("OPENAI_API_KEY")
+qdrant_url = os.environ.get("QDRANT_URL") 
+qdrant_api_key = os.environ.get("QDRANT_API_KEY")
 
-# Get environment variables with debugging
-openai_api_key = os.getenv("OPENAI_API_KEY")
-qdrant_url = os.getenv("QDRANT_URL")
-qdrant_api_key = os.getenv("QDRANT_API_KEY")
-
-# Debug logging 
+# Debug logging
 print("=== ENVIRONMENT DEBUG ===")
 print(f"OPENAI_API_KEY found: {'Yes' if openai_api_key else 'No'}")
 print(f"QDRANT_URL found: {'Yes' if qdrant_url else 'No'}")
@@ -23,54 +18,80 @@ if openai_api_key:
     print(f"OpenAI key starts with: {openai_api_key[:10]}...")
 print("=== END DEBUG ===")
 
-# Validate required environment variables
+# Validate environment variables
 if not openai_api_key:
-    raise ValueError("OPENAI_API_KEY environment variable is not set")
+    raise ValueError("OPENAI_API_KEY environment variable is required")
 if not qdrant_url:
-    raise ValueError("QDRANT_URL environment variable is not set")
+    raise ValueError("QDRANT_URL environment variable is required") 
 if not qdrant_api_key:
-    raise ValueError("QDRANT_API_KEY environment variable is not set")
+    raise ValueError("QDRANT_API_KEY environment variable is required")
 
-openai_client = OpenAI(api_key=openai_api_key)
-qdrant = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+# Initialize OpenAI client
+try:
+    openai_client = OpenAI(api_key=openai_api_key)
+    print("✅ OpenAI client initialized successfully")
+except Exception as e:
+    print(f"❌ Failed to initialize OpenAI client: {e}")
+    raise
 
-# use the collection in exists
+# Initialize Qdrant client
+try:
+    qdrant = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+    print("✅ Qdrant client initialized successfully")
+except Exception as e:
+    print(f"❌ Failed to initialize Qdrant client: {e}")
+    raise
+
+# Constants
 COLLECTION_NAME = "sonia_documents"
 DIMENSIONS = 1536  # OpenAI embedding size
 
 def create_collection_if_not_exists():
-    if COLLECTION_NAME not in qdrant.get_collections().collections:
-        qdrant.create_collection(
-            collection_name=COLLECTION_NAME,
-            vectors_config=VectorParams(size=DIMENSIONS, distance=Distance.COSINE),
-        )
+    try:
+        collections = qdrant.get_collections()
+        collection_names = [col.name for col in collections.collections]
+        
+        if COLLECTION_NAME not in collection_names:
+            qdrant.create_collection(
+                collection_name=COLLECTION_NAME,
+                vectors_config=VectorParams(size=DIMENSIONS, distance=Distance.COSINE),
+            )
+            print(f"✅ Created collection: {COLLECTION_NAME}")
+        else:
+            print(f"✅ Collection {COLLECTION_NAME} already exists")
+    except Exception as e:
+        print(f"❌ Error with collection: {e}")
+        raise
 
-# here we turn text into embeddings
 def get_embedding(text: str) -> list[float]:
-    # clean and validate the text input
+    """Convert text to embeddings using OpenAI"""
     if not text or not isinstance(text, str):
         raise ValueError("Text input must be a non-empty string")
     
-    # clean the text tp remove excessive whitespace 
     cleaned_text = text.strip()
     if not cleaned_text:
         raise ValueError("Text input cannot be empty after cleaning")
     
+    # Truncate if too long
     if len(cleaned_text) > 8000: 
         cleaned_text = cleaned_text[:8000]
+    
     try:
-        response =  openai_client.embeddings.create(
+        response = openai_client.embeddings.create(
             input=cleaned_text,  
             model="text-embedding-3-small"
         )
         return response.data[0].embedding
     except Exception as e:
-        print(f"Error getting embedding for text: {cleaned_text[:100]}...")
-        print(f"Error details: {str(e)}")
-        raise e
+        print(f"❌ Error getting embedding: {e}")
+        print(f"Text preview: {cleaned_text[:100]}...")
+        raise
 
-# her its to save to qdrant
-def store_text_embedding(text: str, metadata: dict = {}):
+def store_text_embedding(text: str, metadata: dict = None):
+    """Store text embedding in Qdrant"""
+    if metadata is None:
+        metadata = {}
+        
     create_collection_if_not_exists()
     vector = get_embedding(text)
     point = PointStruct(
@@ -81,6 +102,7 @@ def store_text_embedding(text: str, metadata: dict = {}):
     qdrant.upsert(collection_name=COLLECTION_NAME, points=[point])
 
 def search_similar(query: str, top_k: int = 5):
+    """Search for similar text in Qdrant"""
     query_vector = get_embedding(query)
     results = qdrant.search(
         collection_name=COLLECTION_NAME,
@@ -90,11 +112,14 @@ def search_similar(query: str, top_k: int = 5):
     return [hit.payload["text"] for hit in results]
 
 def get_answer_from_openai(question: str, context: str) -> str:
+    """Get answer from OpenAI based on context"""
     enhanced_prompt = f"""Based on the following document excerpts, please answer the user's question with clear, well-structured formatting.
 
 Context from documents:
 {context}
+
 User Question: {question}
+
 Instructions for your response:
 - Provide a clear, well-structured answer
 - Use bullet points (with -) when listing items
@@ -107,12 +132,13 @@ Instructions for your response:
 
 Answer:"""
     
-    response = openai_client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {
-                "role": "system", 
-                "content": """You are Sonia AI, a helpful document analysis assistant. 
+    try:
+        response = openai_client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "system", 
+                    "content": """You are Sonia AI, a helpful document analysis assistant. 
 
 Format your responses clearly and professionally:
 - Use line breaks between paragraphs for better readability
@@ -123,10 +149,13 @@ Format your responses clearly and professionally:
 - Always be helpful, accurate, and conversational
 - If you can't find the answer in the context, say so clearly
 - When referencing information, mention which document it came from when possible"""
-            },
-            {"role": "user", "content": enhanced_prompt}
-        ],
-        max_tokens=1000,
-        temperature=0.3
-    )
-    return response.choices[0].message.content.strip()
+                },
+                {"role": "user", "content": enhanced_prompt}
+            ],
+            max_tokens=1000,
+            temperature=0.3
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"❌ Error getting OpenAI response: {e}")
+        raise
