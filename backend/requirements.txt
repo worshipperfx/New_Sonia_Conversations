@@ -1,5 +1,4 @@
 fastapi
-exceptions
 docx
 PyPDF2
 uvicorn
