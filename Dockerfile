@@ -22,4 +22,4 @@ COPY backend /app/backend
 
 # Railway supplies $PORT at runtime; default to 8000 if missing (local run)
 EXPOSE 8000
-CMD ["uvicorn", "backend.test_backend:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug", "--access-log"]
+CMD ["sh", "-c", "uvicorn test_app:app --host 0.0.0.0 --port ${PORT:-8000}"]
