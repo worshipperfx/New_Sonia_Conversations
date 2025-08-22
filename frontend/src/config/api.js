@@ -1,5 +1,4 @@
-// API configuration that works for both development and production
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = 'https://sonia-backend-1086742295203.us-central1.run.app';
 
 export const API_ENDPOINTS = {
   upload: `${API_BASE_URL}/api/upload`,

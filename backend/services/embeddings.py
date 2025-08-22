@@ -1,9 +1,12 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Get environment variables
 openai_api_key = os.environ.get("OPENAI_API_KEY")
 qdrant_url = os.environ.get("QDRANT_URL") 
 qdrant_api_key = os.environ.get("QDRANT_API_KEY")
+
 
 print("=== ENVIRONMENT DEBUG ===")
 print(f"OPENAI_API_KEY found: {'Yes' if openai_api_key else 'No'}")
