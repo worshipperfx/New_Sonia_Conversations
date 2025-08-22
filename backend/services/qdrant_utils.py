@@ -4,13 +4,14 @@ from backend.services.embeddings import get_embedding
 from uuid import uuid4
 import os
 
-# connect to qdrant cloud
-client = QdrantClient(
-    url=os.getenv("QDRANT_URL"),
-    api_key=os.getenv("QDRANT_API_KEY")
-)
+# Get environment variables
+qdrant_url = os.environ.get("QDRANT_URL") 
+qdrant_api_key = os.environ.get("QDRANT_API_KEY")
 
-COLLECTION_NAME = "sonia_docs"
+# connect to qdrant cloud
+client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+
+COLLECTION_NAME = "sonia_documents"
 
 def create_collection():
     try:
