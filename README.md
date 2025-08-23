@@ -149,8 +149,8 @@ sonia-conversations/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/sonia-conversations.git
-cd sonia-conversations
+git clone https://github.com/worshipperfx/New_Sonia_Conversations.git
+cd new-sonia-conversations
 
 # 2. Frontend setup
 cd frontend
@@ -179,8 +179,8 @@ uvicorn main:app --reload
 - QDRANT_API_KEY=your-qdrant-api-key
 - 
 # Deployment
-- Backend (Render)
-- Production URL: https://sonia-conversations-backend.onrender.com
+- Backend - Google Cloud Platform (GCP)
+- Production URL: XXXXX
 
 - Chat Endpoint: /api/chat
 
