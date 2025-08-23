@@ -209,7 +209,7 @@ export default function UploadForm({
           )}
 
           <div className="row" style={{ gap: "12px" }}>
-            <button className="btn btn-primary" type="submit" disabled={!canSubmit}>Upload File to Server</button>
+            <button className="btn btn-primary" type="submit" disabled={!canSubmit}>Upload to {API_ENDPOINTS.upload}</button>
             <button type="button" className="btn btn-ghost" onClick={resetForm}>Reset</button>
           </div>
         </form>
