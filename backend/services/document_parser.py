@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List
 from PyPDF2 import PdfReader
 import docx
+import re
 
 # extract text from PDF
 def extract_pdf_text(file_path: str) -> str:
@@ -70,20 +71,33 @@ def extract_text(file_path: str) -> str:
         raise ValueError(f"Unsupported file type: {ext}. Supported types: .pdf, .docx, .txt")
 
 # we break text into smaller chunks for embeddings
-def chunk_text(text: str, max_tokens: int = 500) -> List[str]:
-    # we just split by paragraphs or sentences
-    paragraphs = text.split("\n\n")
-    chunks = []
-    current = ""
-
-    for para in paragraphs:
-        if len(current) + len(para) <= max_tokens:
-            current += para + "\n\n"
-        else:
-            chunks.append(current.strip())
-            current = para + "\n\n"
+def chunk_text(text: str, max_tokens: int = 1500) -> List[str]:
+    # Clean up the text first
+    text = text.replace('\r\n', '\n')  # Normalize line endings
+    text = ' '.join(text.split())  # Remove excessive whitespace
     
-    if current:
-        chunks.append(current.strip())
+    # Split by sentences instead of paragraphs
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    
+    chunks = []
+    current_chunk = ""
+    
+    for sentence in sentences:
+        if len(current_chunk) + len(sentence) <= max_tokens:
+            current_chunk += sentence + " "
+        else:
+            if current_chunk:
+                chunks.append(current_chunk.strip())
+            current_chunk = sentence + " "
+    
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+    
+    # If still only 1 chunk, force split it
+    if len(chunks) == 1 and len(text) > max_tokens:
+        single_chunk = chunks[0]
+        chunks = []
+        for i in range(0, len(single_chunk), max_tokens):
+            chunks.append(single_chunk[i:i+max_tokens])
+    
     return chunks
-
