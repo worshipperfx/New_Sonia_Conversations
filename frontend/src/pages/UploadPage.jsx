@@ -1,4 +1,5 @@
 import React from "react";
+import UploadForm from "../components/UploadForm.jsx"
 import { API_ENDPOINTS } from "../config/api.js";
 
 export default function UploadPage({ navigate }) {
