@@ -1,5 +1,5 @@
 import React from "react";
-import UploadForm from "../components/UploadForm.jsx";
+import UploadForm from "../config/api.js";
 
 export default function UploadPage({ navigate }) {
   return (
@@ -22,7 +22,7 @@ export default function UploadPage({ navigate }) {
           <p>PDF, DOCX or TXT. We'll extract, chunk, and store in Qdrant. Optionally add metadata before upload.</p>
         </div>
 
-        <UploadForm endpoint="/api/upload" />
+        <UploadForm endpoint={API_ENDPOINTS.upload} />
       </main>
     </>
   );
