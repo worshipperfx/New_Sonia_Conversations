@@ -16,7 +16,7 @@ export default function UploadModal({ onClose, onSuccess }) {
     // Add upload confirmation message
     addMessage({
       type: "system",
-      content: `🎉 Document uploaded successfully! Processed ${response.chunks_uploaded} text chunks. I can now answer questions about this document.`,
+      content: ` Document uploaded successfully! Processed ${response.chunks_uploaded} text chunks. I can now answer questions about this document.`,
     });
 
     // Close modal

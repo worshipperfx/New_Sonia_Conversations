@@ -107,7 +107,7 @@ export default function ChatWindow({ navigate }) {
   const handleUploadSuccess = (response) => {
     addMessage({
       type: "system",
-      content: `🎉 **Document uploaded successfully!** Processed ${response.chunks_uploaded} text chunks and stored in your knowledge base. I can now answer questions about this document.`,
+      content: `**Document uploaded successfully!** Processed ${response.chunks_uploaded} text chunks and stored in your knowledge base. I can now answer questions about this document.`,
     });
     setShowUploadModal(false);
     setTimeout(() => {

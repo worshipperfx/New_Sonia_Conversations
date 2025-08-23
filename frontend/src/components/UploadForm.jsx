@@ -105,7 +105,7 @@ export default function UploadForm({
       });
       setStatus({ 
         type: "success", 
-        message: `🎉 Document uploaded successfully! Processed ${res.chunks_uploaded} text chunks and stored in your knowledge base.` 
+        message: `Document uploaded successfully! Processed ${res.chunks_uploaded} text chunks and stored in your knowledge base.` 
       });
       setResponse(res); 
       setProgress(100);
@@ -209,7 +209,7 @@ export default function UploadForm({
           )}
 
           <div className="row" style={{ gap: "12px" }}>
-            <button className="btn btn-primary" type="submit" disabled={!canSubmit}>Upload to {API_ENDPOINTS.upload}</button>
+            <button className="btn btn-primary" type="submit" disabled={!canSubmit}>Upload File to Server</button>
             <button type="button" className="btn btn-ghost" onClick={resetForm}>Reset</button>
           </div>
         </form>
