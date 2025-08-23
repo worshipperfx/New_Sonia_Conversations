@@ -1,4 +1,5 @@
 import React from "react";
+import { API_ENDPOINTS } from '../config/api.js';
 import UploadForm from "./UploadForm.jsx";
 
 export default function UploadModal({ onClose, onSuccess }) {
