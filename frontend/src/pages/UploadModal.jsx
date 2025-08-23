@@ -75,7 +75,7 @@ export default function UploadModal({ onClose, onSuccess }) {
         <div className="modal-body">
           <UploadForm 
             endpoint="/api/upload" 
-            onSuccess={handleSuccess}
+            onSuccess={handleUploadSuccess}
             hideResponse={true}
           />
         </div>
