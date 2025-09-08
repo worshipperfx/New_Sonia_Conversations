@@ -17,7 +17,7 @@ app.include_router(chat.router, prefix="/api")
 
 origins = [
     "http://localhost:5173",  # Local dev
-    "https://new-sonia-conversations-marvellous-projects-62e5e8be.vercel.app",  # Production
+    "https://new-sonia-conversations.vercel.app", # Production
 ]
 
 app.add_middleware(
